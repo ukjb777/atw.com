@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ATW - Amateur Trampoline Wrestling</title>
+  <link rel="icon" type="image/png" href="images/ATW GRIS.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
@@ -16,6 +17,53 @@
       background: #111;
       color: #fff;
       letter-spacing: 0.5px;
+    }
+
+    /* --- ÉCRAN RÉTRO NEW YORK (LUMIÈRE ROUGE QUI CLIGNOTE UNIQUEMENT) --- */
+    .ticker-ny-retro {
+      background: #050505;
+      border-top: 2px solid #ff0000;
+      border-bottom: 2px solid #ff0000;
+      overflow: hidden;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10000;
+      padding: 12px 0;
+      box-shadow: inset 0 0 15px rgba(255,0,0,0.5), 0 4px 20px rgba(255,0,0,0.4);
+    }
+
+    .ticker-track {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scrollTickerInfinite 18s linear infinite;
+    }
+
+    .ticker-ny-retro .ticker-text {
+      display: inline-block;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: #ff1100;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      animation: textFlicker 4s infinite;
+    }
+
+    @keyframes scrollTickerInfinite {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes textFlicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        color: #ff1100;
+        text-shadow: 0 0 8px #ff0000, 0 0 20px #ff0000;
+      }
+      20%, 24%, 55% {
+        color: #aa0a00;
+        text-shadow: 0 0 2px rgba(255,0,0,0.2);
+      }
     }
 
     /* --- ANIMATIONS DE TREMBLEMENT --- */
@@ -661,7 +709,7 @@
       font-style: italic;
     }
 
-    /* GALERIE LAYOUT AVEC NAVIGATION LATÉRALE */
+    /* GALERIE LAYOUT AVEC NAVIGATION LATÉRALE CENTRÉE */
     #galerie {
       position: relative;
       max-width: 1200px;
@@ -674,30 +722,40 @@
     }
     .gallery-sidebar {
       position: sticky;
-      top: 30px;
+      top: calc(50vh - 140px);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       width: 100px;
       flex-shrink: 0;
       align-items: flex-start;
     }
     .gallery-nav-btn {
       width: 70px;
-      height: 50px;
+      height: 46px;
       background: #1a1a1a;
       color: #fff;
       text-decoration: none;
       font-family: 'Oswald', Arial, sans-serif;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       border: 2px solid #ff0000;
       border-radius: 6px;
       box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
       transition: all 0.25s ease-in-out;
+      line-height: 1;
+    }
+    .gallery-nav-btn span.btn-subtext {
+      font-size: 0.42rem;
+      letter-spacing: 0px;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-top: 2px;
+      white-space: nowrap;
     }
     .gallery-nav-btn:hover {
       background: #ff0000;
@@ -705,10 +763,13 @@
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
       transform: scale(1.05);
     }
+    .gallery-nav-btn:hover span.btn-subtext {
+      color: #000;
+    }
     .gallery-nav-dots {
       color: #ff0000;
       font-weight: bold;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       line-height: 1;
       letter-spacing: 2px;
       padding-left: 25px;
@@ -720,7 +781,7 @@
 
     .gallery-episode-section {
       margin-bottom: 50px;
-      scroll-margin-top: 30px;
+      scroll-margin-top: 80px;
     }
     .gallery-episode-title {
       font-size: 1.4rem;
@@ -772,57 +833,135 @@
       color: #fff;
     }
 
-    /* NEWS & HISTOIRE AVEC IMAGE CARRÉE À DROITE */
-    .news-container {
+    /* SLOT VIDE "COMING SOON" DANS UN STYLE DISTINCT DE LA BANDEROLE */
+    .gallery-item-empty {
+      background: #121212;
+      border: 2px solid #ff4400;
+      border-radius: 8px;
+      aspect-ratio: 16 / 9;
       display: flex;
-      flex-direction: column;
-      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(255,68,0,0.15), 0 0 15px rgba(255,68,0,0.2);
+    }
+    .coming-soon-banner-box {
+      width: 85%;
+      background: #1a0800;
+      border: 1px dashed #ff8800;
+      border-radius: 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 10px 0;
+      box-shadow: 0 0 15px rgba(255,136,0,0.3);
+    }
+    .coming-soon-track {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scrollComingSoon 12s linear infinite;
+    }
+    .coming-soon-text {
+      display: inline-block;
+      font-family: 'Oswald', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #ff8800;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 8px rgba(255,136,0,0.8);
+    }
+
+    @keyframes scrollComingSoon {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* NEWS & HISTORIQUE AVEC DESIGN AMÉLIORÉ + INTERACTIF */
+    .news-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
     .news-card {
-      background: #222;
+      background: linear-gradient(145deg, #1d1d1d, #141414);
       border: 1px solid #333;
-      border-left: 4px solid #ff0000;
-      border-radius: 20px;
-      padding: 20px;
+      border-left: 5px solid #ff0000;
+      border-radius: 14px;
+      padding: 25px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      gap: 25px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .news-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(255,0,0,0.08), transparent 60%);
+      pointer-events: none;
     }
     .news-card:hover {
-      transform: scale(1.02) translateY(-2px);
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+      transform: translateY(-4px);
+      border-color: #ff8800;
+      border-left-color: #ff8800;
+      box-shadow: 0 10px 30px rgba(255, 136, 0, 0.2);
     }
     .news-content {
       flex: 1;
+      z-index: 1;
+    }
+    .news-image-wrapper {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #333;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease;
+    }
+    .news-card:hover .news-image-wrapper {
+      transform: scale(1.05);
+      border-color: #ff0000;
     }
     .news-image {
-      width: 100px;
-      height: 100px;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      border-radius: 10px;
-      border: 1px solid #444;
-      flex-shrink: 0;
-      background: #111;
     }
-    .news-date {
+    .news-tag {
+      display: inline-block;
+      background: rgba(255, 0, 0, 0.2);
       color: #ff0000;
-      font-size: 0.85rem;
+      border: 1px solid #ff0000;
+      padding: 3px 10px;
+      font-size: 0.75rem;
       font-weight: bold;
+      border-radius: 4px;
       text-transform: uppercase;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
     }
     .news-title {
-      font-size: 1.3rem;
-      margin: 0 0 8px 0;
+      font-size: 1.4rem;
+      margin: 0 0 10px 0;
       color: #fff;
+      letter-spacing: 0.5px;
     }
     .news-card p {
       margin: 0;
-      color: #ccc;
+      color: #bbb;
       font-size: 0.95rem;
       font-family: Arial, sans-serif;
+      line-height: 1.5;
     }
 
     footer {
@@ -1124,9 +1263,9 @@
         flex-direction: column;
         align-items: flex-start;
       }
-      .news-image {
+      .news-image-wrapper {
         width: 100%;
-        height: 150px;
+        height: 180px;
       }
       .footer-secret-container {
         position: static;
@@ -1142,6 +1281,14 @@
 </head>
 
 <body>
+
+<!-- ÉCRAN RÉTRO NEW YORK INFINI & CLIGNOTEMENT LUMINEUX UNIQUEMENT -->
+<div class="ticker-ny-retro">
+  <div class="ticker-track">
+    <span class="ticker-text">&gt;&gt;&gt; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &lt;&lt;&lt; &nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <span class="ticker-text">&gt;&gt;&gt; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &nbsp;&bull;&nbsp; BACK SOON &lt;&lt;&lt; &nbsp;&nbsp;&nbsp;&nbsp;</span>
+  </div>
+</div>
 
 <!-- POP-UP D'ENTRÉE -->
 <div id="welcome-popup">
@@ -1209,7 +1356,7 @@
       <div class="tcg-card card-ghostboy">
         <div class="tcg-header">
           <h2 class="tcg-name">GHOSTBOY</h2>
-          <span class="tcg-record">8 - 5</span>
+          <span class="tcg-record" id="record-ghostboy">0 - 0</span>
         </div>
         <div class="tcg-img-container" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('images/atw fire.jpeg'); background-size: cover; background-position: center;">
           <img src="images/ghostboy portrait.png" alt="GHOSTBOY">
@@ -1265,7 +1412,7 @@
           <div class="tcg-belt-container">
             <img src="images/titre.png" alt="Champion Belt" class="tcg-belt">
           </div>
-          <span class="tcg-record">4 - 4</span>
+          <span class="tcg-record" id="record-ukyo">0 - 0</span>
         </div>
         <div class="tcg-img-container" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('images/atw fire.jpeg'); background-size: cover; background-position: center;">
           <img src="images/ukyo portrait.png" alt="UKYO">
@@ -1318,7 +1465,7 @@
       <div class="tcg-card card-tgk">
         <div class="tcg-header">
           <h2 class="tcg-name">THE GAUNT KNIGHT</h2>
-          <span class="tcg-record">3 - 7</span>
+          <span class="tcg-record" id="record-the gaunt knight">0 - 0</span>
         </div>
         <div class="tcg-img-container" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('images/atw fire.jpeg'); background-size: cover; background-position: center;">
           <img src="images/tgk portrait.png" alt="THE GAUNT KNIGHT">
@@ -1334,8 +1481,8 @@
             <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 85%;"></div></div>
           </div>
           <div class="stat-row">
-            <span class="stat-label"></span>
-            <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 0%;"></div></div>
+            <span class="stat-label">DEF</span>
+            <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 50%;"></div></div>
           </div>
           <div class="stat-row">
             <span class="stat-label">RAGE</span>
@@ -1508,6 +1655,8 @@
       <a href="#galerie-ep3" class="gallery-nav-btn">3</a>
       <span class="gallery-nav-dots">...</span>
       <a href="#galerie-ep4" class="gallery-nav-btn">4</a>
+      <span class="gallery-nav-dots">...</span>
+      <a href="#galerie-ep5" class="gallery-nav-btn">5<span class="btn-subtext">Bounce Of Fury</span></a>
     </div>
     <div class="gallery-content-area">
       <!-- ÉPISODE 1 -->
@@ -1695,6 +1844,25 @@
           </div>
         </div>
       </div>
+
+      <!-- ÉPISODE 5 - BOUNCE OF FURY -->
+      <div id="galerie-ep5" class="gallery-episode-section">
+        <h2 class="gallery-episode-title">ÉPISODE 5 - BOUNCE OF FURY</h2>
+        <div class="gallery-grid">
+          <div class="gallery-item">
+            <div class="gallery-item-empty">
+              <div class="coming-soon-banner-box">
+                <div class="coming-soon-track">
+                  <span class="coming-soon-text">COMING SOON &nbsp;//&nbsp; COMING SOON &nbsp;//&nbsp; COMING SOON &nbsp;//&nbsp; COMING SOON &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                  <span class="coming-soon-text">COMING SOON &nbsp;//&nbsp; COMING SOON &nbsp;//&nbsp; COMING SOON &nbsp;//&nbsp; COMING SOON &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </div>
+              </div>
+            </div>
+            <p>Coming Soon</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1704,31 +1872,29 @@
   <h1>Backstage / News</h1>
 
   <div class="news-container">
+    <!-- NOUVELLE NEWS AJOUTÉE -->
     <div class="news-card">
       <div class="news-content">
-        <div class="news-date">OFFICIEL</div>
-        <h3 class="news-title">Bounce Of Fury Reporté À 2026 !</h3>
-        <p>Initialement prévu pour 2025, le Pay-Per-View majeur de l'ATW est officiellement repoussé à 2026. La direction promet un show historique pour compenser cette attente.</p>
+        <span class="news-tag">Tournage</span>
+        <div class="news-date" style="color: #ff8800; font-size: 0.8rem; margin-bottom: 4px;">Dernières Nouvelles</div>
+        <h3 class="news-title">Bounce Of Fury Est Officiellement Tourné !</h3>
+        <p>C'est officiel, le tournage de Bounce Of Fury est dans la boîte et le show est bientôt prêt à être sorti. Préparez-vous, ça va secouer !</p>
       </div>
-      <img src="images/2025 to 2026.png" alt="News Image" class="news-image">
+      <div class="news-image-wrapper">
+        <img src="images/boflogo.png" alt="News Image" class="news-image">
+      </div>
     </div>
 
     <div class="news-card">
       <div class="news-content">
-        <div class="news-date">RÉVÉLATION</div>
-        <h3 class="news-title">Une Nouvelle Arène Dévoilée À Bounce Of Fury</h3>
-        <p>C'est confirmé : l’ATW s'agrandit. Le lieu de combat officiel change d'échelle et sera présenté en exclusivité lors de Bounce Of Fury 2026.</p>
+        <span class="news-tag">Révélation</span>
+        <div class="news-date" style="color: #ff8800; font-size: 0.8rem; margin-bottom: 4px;">Exclusivité PPV</div>
+        <h3 class="news-title">Une Nouvelle Arène Bientôt Dévoilée !?</h3>
+        <p>C'est confirmé : l’ATW s'agrandit. Un nouveau trampoline sera présenté prochainement.</p>
       </div>
-      <img src="images/new arena.png" alt="News Image" class="news-image">
-    </div>
-
-    <div class="news-card">
-      <div class="news-content">
-        <div class="news-date">RETOUR</div>
-        <h3 class="news-title">Le Trailer De BOUNCE OF FURY 2026 Sort Bientôt !</h3>
-        <p>En effet dès que le CPV est tourné, le trailer pourra être finalisé et sortir.</p>
+      <div class="news-image-wrapper">
+        <img src="images/new arena.png" alt="News Image" class="news-image">
       </div>
-      <img src="images/boflogo.png" alt="News Image" class="news-image">
     </div>
   </div>
 </section>
@@ -1750,13 +1916,51 @@
     }
   }
 
+  // Calcul dynamique des scores de victoires / défaites depuis le tableau des épisodes
+  function calculateBouncerRecords() {
+    const rows = document.querySelectorAll('#episodes table tr');
+    const stats = {};
+
+    // Initialisation des bouncers connus
+    const bouncers = ['GHOSTBOY', 'UKYO', 'THE GAUNT KNIGHT'];
+    bouncers.forEach(b => stats[b] = { wins: 0, losses: 0 });
+
+    for (let i = 1; i < rows.length; i++) {
+      const cells = rows[i].querySelectorAll('td');
+      if (cells.length >= 5) {
+        const matchText = cells[2].textContent.trim().toUpperCase();
+        const winnerText = cells[4].querySelector('.winner-text')?.textContent.trim().toUpperCase();
+
+        if (winnerText && winnerText !== '???' && bouncers.includes(winnerText)) {
+          stats[winnerText].wins++;
+          
+          // Identifier les perdants dans le match (ex: "X vs Y")
+          bouncers.forEach(b => {
+            if (matchText.includes(b) && b !== winnerText) {
+              stats[b].losses++;
+            }
+          });
+        }
+      }
+    }
+
+    // Injection dans le HTML des cartes TCG
+    for (let b of bouncers) {
+      const idKey = b.toLowerCase();
+      const recordEl = document.getElementById(`record-${idKey}`);
+      if (recordEl) {
+        recordEl.textContent = `${stats[b].wins} - ${stats[b].losses}`;
+      }
+    }
+  }
+
   // Séquence cheat-code flèches
   const secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
   let userKeys = [];
 
   window.addEventListener('keydown', (e) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-      e.preventDefault(); // Empêche la page de bouger avec les flèches
+      e.preventDefault();
       
       userKeys.push(e.key);
       if (userKeys.length > secretCode.length) {
@@ -1772,13 +1976,11 @@
           secretBtn.style.display = 'inline-block';
           container.style.opacity = '1';
           
-          // Déclenche l'effet de flash lumineux intense pendant 1 seconde
           secretBtn.classList.add('unlocked-flash');
           setTimeout(() => {
             secretBtn.classList.remove('unlocked-flash');
           }, 1000);
           
-          // Petit son de débloquage
           try {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = audioCtx.createOscillator();
@@ -1865,14 +2067,12 @@
     }
   }
 
-  // Initialisation des 3 lecteurs
   const audioPlayers = {
     ghostboy: new MusicPlayer('sons/ghostboy-theme.mp3', 'ghostboy'),
     ukyo: new MusicPlayer('sons/ukyo-theme.mp3', 'ukyo'),
     tgk: new MusicPlayer('sons/tgk-theme.mp3', 'tgk')
   };
 
-  // Fonction de woosh léger au survol
   function playHoverWoosh() {
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1901,7 +2101,6 @@
     } catch(e) {}
   }
 
-  // Fonction de clic (pop)
   function playClickPop() {
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2014,10 +2213,11 @@
     }
   }
 
+  let lastEpisodeDate = new Date('2025-09-13T20:00:00');
+
   function updateTimer() {
-    const lastVideoDate = new Date('2025-09-13T20:00:00');
     const now = new Date();
-    let diff = now - lastVideoDate;
+    let diff = now - lastEpisodeDate;
 
     if (diff < 0) diff = 0;
 
@@ -2040,8 +2240,11 @@
     document.getElementById('t-secs').textContent = pad(seconds);
   }
 
-  setInterval(updateTimer, 1000);
-  updateTimer();
+  window.addEventListener('DOMContentLoaded', () => {
+    calculateBouncerRecords();
+    setInterval(updateTimer, 1000);
+    updateTimer();
+  });
 </script>
 
 </body>
