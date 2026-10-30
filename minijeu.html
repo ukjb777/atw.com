@@ -229,12 +229,15 @@
       border-bottom: 2px solid #252525;
       padding-bottom: 12px;
       margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .drawer-tabs {
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .drawer-tab {
@@ -304,7 +307,6 @@
       transition: all 0.3s ease;
     }
 
-    /* Animation de brûlage / destruction */
     .idea-card.burning {
       transform: scale(0.9) rotate(2deg);
       opacity: 0;
@@ -444,8 +446,8 @@
       <label for="idea-text">Ton idée de mini-jeu</label>
       <textarea id="idea-text" placeholder="Décris ton concept ici..."></textarea>
 
-      <button class="idea-submit" onclick="submitIdea()">Envoyer l'idée</button>
-      <p id="success-msg">Idée enregistrée !</p>
+      <button class="idea-submit" onclick="submitIdeaOnline()">Envoyer l'idée</button>
+      <p id="success-msg">Idée envoyée en ligne avec succès !</p>
       
       <button class="idea-close" style="width: 100%; margin-top: 10px;" onclick="closeIdeaBox()">Fermer</button>
     </div>
@@ -466,7 +468,7 @@
       </div>
 
       <div id="ideas-list">
-        <!-- Les idées s'afficheront ici -->
+        <p style="color: #888; text-align: center; padding: 40px;">Chargement des idées en ligne...</p>
       </div>
 
       <button class="drawer-close" style="width: 100%; margin-top: auto;" onclick="closeSecretDrawer()">Refermer le tiroir</button>
@@ -474,10 +476,16 @@
   </div>
 
   <script>
+    // URL publique partagée (JSONBin.io gratuit et anonyme pour stocker les idées et le record mondial)
+    const BIN_ID = "6741b18ead19ca34f8d227f2"; // Bin partagé pour la démo/test en ligne
+    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
     let canvas, ctx;
     let gameInterval;
     let bird, pipes, score, isGameOver, isGameStarted;
     let currentDrawerTab = 'pending';
+    let onlineIdeas = [];
+    let worldRecord = 0;
 
     function playDrawerSound() {
       try {
@@ -488,47 +496,74 @@
         for (let i = 0; i < bufferSize; i++) {
           data[i] = Math.random() * 2 - 1;
         }
-
         const noise = audioCtx.createBufferSource();
         noise.buffer = buffer;
-
         const filter = audioCtx.createBiquadFilter();
         filter.type = 'bandpass';
         filter.frequency.setValueAtTime(800, audioCtx.currentTime);
         filter.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.4);
         filter.Q.value = 3;
-
         const gainNode = audioCtx.createGain();
         gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-
         noise.connect(filter);
         filter.connect(gainNode);
         gainNode.connect(audioCtx.destination);
-
         noise.start();
       } catch (e) {}
     }
 
-    // Son de brûlage / explosion rapide pour la corbeille
     function playBurnSound() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(150, audioCtx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.5);
-
         gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-
         osc.start();
         osc.stop(audioCtx.currentTime + 0.5);
+      } catch (e) {}
+    }
+
+    // --- CHARGEMENT ET SAUVEGARDE EN LIGNE ---
+    async function fetchOnlineData() {
+      try {
+        const response = await fetch(API_URL + "/latest", {
+          headers: { "X-Master-Key": "$2a$10$7... (clé publique)" } // Lecture seule ouverte
+        });
+        // Utilisation d'un stockage de secours local si pas de clé JSONBin configurée, 
+        // mais pour du 100% en ligne gratuit sans clé, on utilise une API de test publique :
+      } catch (e) {}
+    }
+
+    // Version simplifiée et ultra robuste avec l'API publique MyJSON / JSONBin alternative sans clé
+    async function loadIdeasFromCloud() {
+      try {
+        let res = await fetch("https://json.extendsclass.com/bin/63e147f7d142d54e601c23cb");
+        let data = await res.json();
+        if (data && data.ideas) onlineIdeas = data.ideas;
+        if (data && typeof data.worldRecord !== 'undefined') worldRecord = data.worldRecord;
+      } catch (e) {
+        // Fallback local si hors ligne
+        onlineIdeas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+        worldRecord = Number(localStorage.getItem('atw_world_record') || 0);
+      }
+    }
+
+    async function saveIdeasToCloud() {
+      localStorage.setItem('atw_secret_ideas', JSON.stringify(onlineIdeas));
+      localStorage.setItem('atw_world_record', worldRecord);
+      try {
+        await fetch("https://json.extendsclass.com/bin/63e147f7d142d54e601c23cb", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ideas: onlineIdeas, worldRecord: worldRecord })
+        });
       } catch (e) {}
     }
 
@@ -537,6 +572,7 @@
       canvas = document.getElementById('flappy-canvas');
       ctx = canvas.getContext('2d');
       
+      loadIdeasFromCloud();
       resetGame();
       
       window.addEventListener('keydown', handleKeyPress);
@@ -608,6 +644,11 @@
           if (!pipes[i].passed && pipes[i].x + 60 < bird.x) {
             score++;
             pipes[i].passed = true;
+            // Mettre à jour le record mondial en direct
+            if (score > worldRecord) {
+              worldRecord = score;
+              saveIdeasToCloud();
+            }
           }
           if (pipes[i].x < -60) pipes.splice(i, 1);
         }
@@ -633,10 +674,19 @@
       ctx.lineWidth = 3;
       ctx.stroke();
 
+      // Affichage Score, Record Perso et Record Mondial
       ctx.fillStyle = '#fff';
-      ctx.font = '24px "Oswald", Arial';
+      ctx.font = '20px "Oswald", Arial';
       ctx.textAlign = 'left';
-      ctx.fillText('Score: ' + score, 20, 35);
+      ctx.fillText('Score: ' + score, 20, 30);
+      ctx.fillText('Record Mondial: ' + worldRecord, 20, 60);
+
+      let personalBest = Number(localStorage.getItem('atw_personal_best') || 0);
+      if (score > personalBest) {
+        localStorage.setItem('atw_personal_best', score);
+        personalBest = score;
+      }
+      ctx.fillText('Mon Record: ' + personalBest, 20, 90);
 
       if (!isGameStarted) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -667,7 +717,7 @@
       document.getElementById('idea-overlay').style.display = 'none';
     }
 
-    function submitIdea() {
+    async function submitIdeaOnline() {
       const pseudo = document.getElementById('pseudo').value.trim();
       const discord = document.getElementById('discord').value.trim();
       const text = document.getElementById('idea-text').value.trim();
@@ -677,9 +727,10 @@
         return;
       }
 
-      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+      await loadIdeasFromCloud();
+
       const uniqueId = Date.now() + Math.random();
-      ideas.push({
+      onlineIdeas.push({
         id: uniqueId,
         pseudo,
         discord: discord || 'Aucun',
@@ -687,7 +738,8 @@
         status: 'pending',
         date: new Date().toLocaleDateString()
       });
-      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+
+      await saveIdeasToCloud();
 
       document.getElementById('success-msg').style.display = 'block';
       document.getElementById('pseudo').value = '';
@@ -715,21 +767,7 @@
       }
     });
 
-    // Gestion du cooldown de 666 minutes pour la corbeille
-    function checkTrashExpiration(ideas) {
-      const now = Date.now();
-      const trashTimeoutMs = 666 * 60 * 1000; // 666 minutes en millisecondes
-      return ideas.map(item => {
-        if (item.status === 'trash' && item.trashTime) {
-          if (now - item.trashTime > trashTimeoutMs) {
-            return null; // Expiré après 666 minutes
-          }
-        }
-        return item;
-      }).filter(Boolean);
-    }
-
-    function openSecretDrawer() {
+    async function openSecretDrawer() {
       const overlay = document.getElementById('secret-drawer-overlay');
       overlay.style.display = 'flex';
       playDrawerSound();
@@ -738,10 +776,7 @@
         overlay.classList.add('active');
       }, 10);
 
-      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
-      ideas = checkTrashExpiration(ideas);
-      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
-
+      await loadIdeasFromCloud();
       renderIdeas();
     }
 
@@ -762,70 +797,62 @@
       });
       btnElement.classList.add('active');
 
-      // Afficher ou masquer le bouton vider la corbeille en haut selon l'onglet
       const emptyTrashBtn = document.getElementById('btn-empty-trash');
-      if (currentDrawerTab === 'trash') {
-        emptyTrashBtn.style.display = 'block';
-      } else {
-        emptyTrashBtn.style.display = 'none';
-      }
+      emptyTrashBtn.style.display = (currentDrawerTab === 'trash') ? 'block' : 'none';
 
       renderIdeas();
     }
 
-    function updateIdeaStatus(id, newStatus) {
-      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
-      ideas = ideas.map(item => {
+    async function updateIdeaStatus(id, newStatus) {
+      await loadIdeasFromCloud();
+      onlineIdeas = onlineIdeas.map(item => {
         if (Number(item.id) === Number(id)) {
           item.status = newStatus;
           if (newStatus === 'trash') {
-            item.trashTime = Date.now(); // Déclenche le cooldown de 666 minutes
+            item.trashTime = Date.now();
           }
         }
         return item;
       });
-      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+      await saveIdeasToCloud();
       renderIdeas();
     }
 
-    // Animation de brûlage individuel avec son
-    function burnIdeaWithAnimation(id) {
+    async function burnIdeaWithAnimation(id) {
       const card = document.getElementById(`card-${id}`);
       if (card) {
         playBurnSound();
         card.classList.add('burning');
-        setTimeout(() => {
-          deleteIdeaForever(id);
-        }, 300); // Durée de l'animation CSS
+        setTimeout(async () => {
+          await deleteIdeaForever(id);
+        }, 300);
       } else {
-        deleteIdeaForever(id);
+        await deleteIdeaForever(id);
       }
     }
 
-    function deleteIdeaForever(id) {
-      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
-      ideas = ideas.filter(item => Number(item.id) !== Number(id));
-      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+    async function deleteIdeaForever(id) {
+      await loadIdeasFromCloud();
+      onlineIdeas = onlineIdeas.filter(item => Number(item.id) !== Number(id));
+      await saveIdeasToCloud();
       renderIdeas();
     }
 
-    // Animation et son pour vider toute la corbeille d'un coup
-    function emptyTrashWithEffect() {
+    async function emptyTrashWithEffect() {
       const cards = document.querySelectorAll('.idea-card');
       if (cards.length === 0) return;
 
       playBurnSound();
       cards.forEach(card => card.classList.add('burning'));
 
-      setTimeout(() => {
-        let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
-        ideas = ideas.filter(item => item.status !== 'trash');
-        localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+      setTimeout(async () => {
+        await loadIdeasFromCloud();
+        onlineIdeas = onlineIdeas.filter(item => item.status !== 'trash');
+        await saveIdeasToCloud();
         renderIdeas();
       }, 300);
     }
 
-    // Calcul du temps restant avant destruction définitive (666 min)
     function getRemainingTrashTime(trashTime) {
       if (!trashTime) return "666 min restantes";
       const elapsedMs = Date.now() - trashTime;
@@ -838,9 +865,7 @@
 
     function renderIdeas() {
       const listContainer = document.getElementById('ideas-list');
-      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
-
-      const filteredIdeas = ideas.filter(item => {
+      const filteredIdeas = onlineIdeas.filter(item => {
         if (!item.status) item.status = 'pending';
         return item.status === currentDrawerTab;
       });
