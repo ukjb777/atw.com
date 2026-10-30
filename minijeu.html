@@ -52,7 +52,7 @@
       flex-wrap: wrap;
     }
 
-    .btn-back, .btn-flappy {
+    .btn-back, .btn-flappy, .btn-idea {
       background: #ff0000;
       color: #000;
       text-decoration: none;
@@ -69,20 +69,20 @@
       font-size: 1rem;
     }
 
-    .btn-flappy {
+    .btn-flappy, .btn-idea {
       background: #222;
       color: #ff0000;
       border: 2px solid #ff0000;
     }
 
-    .btn-back:hover, .btn-flappy:hover {
+    .btn-back:hover, .btn-flappy:hover, .btn-idea:hover {
       background: #fff;
       color: #000;
       transform: scale(1.05);
     }
 
-    /* Styles pour le jeu FlappyBoing */
-    #flappy-overlay {
+    /* Overlays */
+    #flappy-overlay, #idea-overlay, #secret-drawer-overlay {
       display: none;
       position: fixed;
       top: 0;
@@ -103,7 +103,7 @@
       max-width: 100%;
     }
 
-    .flappy-close {
+    .flappy-close, .idea-close, .drawer-close {
       margin-top: 15px;
       background: #ff0000;
       color: #000;
@@ -116,9 +116,290 @@
       text-transform: uppercase;
     }
 
-    .flappy-close:hover {
+    .flappy-close:hover, .idea-close:hover, .drawer-close:hover {
       background: #fff;
     }
+
+    /* Boîte à idées publique */
+    .idea-box {
+      background: #1a1a1a;
+      border: 3px solid #ff0000;
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 520px;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+      text-align: left;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-col {
+      flex: 1;
+    }
+
+    .idea-box label, .drawer-box h2 {
+      display: block;
+      color: #ff0000;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .idea-box input, .idea-box textarea {
+      width: 100%;
+      padding: 10px;
+      background: #111;
+      border: 2px solid #333;
+      color: #fff;
+      border-radius: 6px;
+      font-family: Arial, sans-serif;
+      box-sizing: border-box;
+      font-size: 0.95rem;
+    }
+
+    .idea-box input:focus, .idea-box textarea:focus {
+      border-color: #ff0000;
+      outline: none;
+    }
+
+    .idea-box textarea {
+      resize: vertical;
+      height: 90px;
+      margin-bottom: 20px;
+    }
+
+    .idea-submit {
+      background: #ff0000;
+      color: #000;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Oswald', Arial, sans-serif;
+      text-transform: uppercase;
+      transition: 0.2s;
+    }
+
+    .idea-submit:hover {
+      background: #fff;
+    }
+
+    #success-msg {
+      color: #00ff00;
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+
+    /* Tiroir secret aux dimensions fixes */
+    .drawer-box {
+      width: 750px;
+      height: 650px;
+      max-width: 95vw;
+      max-height: 90vh;
+      background: #161616;
+      border: 3px solid #ff0000;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      transform: translateY(-100vh);
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    #secret-drawer-overlay.active .drawer-box {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #252525;
+      padding-bottom: 12px;
+      margin-bottom: 15px;
+    }
+
+    .drawer-tabs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .drawer-tab {
+      background: #111;
+      color: #888;
+      border: 1px solid #333;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Oswald', Arial, sans-serif;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      transition: 0.2s;
+    }
+
+    .drawer-tab.active {
+      background: #ff0000;
+      color: #000;
+      border-color: #ff0000;
+      font-weight: 700;
+    }
+
+    .btn-empty-trash {
+      background: #500;
+      color: #ff8888;
+      border: 1px solid #ff0000;
+      display: none;
+    }
+    .btn-empty-trash:hover {
+      background: #ff0000;
+      color: #000;
+    }
+
+    #ideas-list {
+      flex: 1;
+      overflow-y: auto;
+      background: #101010;
+      border: 2px solid #222;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    #ideas-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    #ideas-list::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+    #ideas-list::-webkit-scrollbar-thumb:hover {
+      background: #ff0000;
+    }
+
+    .idea-card {
+      background: #181818;
+      border: 1px solid #2c2c2c;
+      border-left: 4px solid #ff0000;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      transition: all 0.3s ease;
+    }
+
+    /* Animation de brûlage / destruction */
+    .idea-card.burning {
+      transform: scale(0.9) rotate(2deg);
+      opacity: 0;
+      filter: brightness(3) sepia(1) hue-rotate(-50deg);
+    }
+
+    .idea-card-main {
+      flex: 1;
+    }
+
+    .idea-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .idea-author {
+      color: #ff0000;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .idea-discord {
+      background: #222;
+      color: #aaa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: Arial, sans-serif;
+    }
+
+    .idea-date {
+      color: #666;
+      font-size: 0.75rem;
+      margin-left: auto;
+      font-family: Arial, sans-serif;
+    }
+
+    .trash-timer {
+      background: #310;
+      color: #ffaa55;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: Arial, sans-serif;
+    }
+
+    .idea-text {
+      color: #ccc;
+      font-family: Arial, sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      margin: 0;
+      word-break: break-word;
+    }
+
+    .idea-card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 110px;
+    }
+
+    .action-btn {
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 5px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-family: 'Oswald', Arial, sans-serif;
+      border: none;
+      transition: 0.2s;
+      text-align: center;
+    }
+
+    .btn-accept { background: #008800; color: #fff; }
+    .btn-accept:hover { background: #00cc00; color: #000; }
+
+    .btn-reject { background: #880000; color: #fff; }
+    .btn-reject:hover { background: #cc0000; color: #fff; }
+
+    .btn-pending { background: #222; color: #aaa; }
+    .btn-pending:hover { background: #444; color: #fff; }
+
+    .btn-trash { background: #2a2a2a; color: #aaa; }
+    .btn-trash:hover { background: #444; color: #fff; }
+
+    .btn-restore { background: #0055aa; color: #fff; }
+    .btn-restore:hover { background: #0088ff; color: #000; }
+
+    .btn-burn { background: #500; color: #ff8888; }
+    .btn-burn:hover { background: #ff0000; color: #000; }
   </style>
 </head>
 <body>
@@ -132,21 +413,124 @@
 
     <div class="btn-group">
       <button class="btn-flappy" onclick="startFlappyBoing()">Patienter sur FlappyBoing</button>
+      <button class="btn-idea" onclick="openIdeaBox()">Boîte à idées</button>
       <a href="index.html" class="btn-back">▲ Retour au site</a>
     </div>
   </div>
 
-  <!-- Overlay du mini-jeu FlappyBoing -->
+  <!-- Overlay FlappyBoing -->
   <div id="flappy-overlay">
     <h2 style="color: #ff0000; text-transform: uppercase; margin-bottom: 10px;">FlappyBoing</h2>
     <canvas id="flappy-canvas" width="400" height="500"></canvas>
     <button class="flappy-close" onclick="closeFlappyBoing()">Quitter</button>
   </div>
 
+  <!-- Overlay Boîte à Idées (Public) -->
+  <div id="idea-overlay">
+    <div class="idea-box">
+      <h2 style="color: #ff0000; text-transform: uppercase; margin-top: 0; margin-bottom: 20px; text-align: center; letter-spacing: 1px;">Boîte à idées mini-jeu</h2>
+      
+      <div class="form-row">
+        <div class="form-col">
+          <label for="pseudo">Ton pseudo</label>
+          <input type="text" id="pseudo" placeholder="Ex: Ukyo">
+        </div>
+        <div class="form-col">
+          <label for="discord">Ton discord (optionnel)</label>
+          <input type="text" id="discord" placeholder="donne bien le bon pseudo">
+        </div>
+      </div>
+
+      <label for="idea-text">Ton idée de mini-jeu</label>
+      <textarea id="idea-text" placeholder="Décris ton concept ici..."></textarea>
+
+      <button class="idea-submit" onclick="submitIdea()">Envoyer l'idée</button>
+      <p id="success-msg">Idée enregistrée !</p>
+      
+      <button class="idea-close" style="width: 100%; margin-top: 10px;" onclick="closeIdeaBox()">Fermer</button>
+    </div>
+  </div>
+
+  <!-- Overlay Tiroir Secret -->
+  <div id="secret-drawer-overlay">
+    <div class="drawer-box">
+      <div class="drawer-header">
+        <h2 style="color: #ff0000; text-transform: uppercase; margin: 0; font-size: 1.2rem;">🗄️ Gestion des Idées ATW</h2>
+        <div class="drawer-tabs">
+          <button class="drawer-tab active" onclick="switchDrawerTab('pending', this)">En attente</button>
+          <button class="drawer-tab" onclick="switchDrawerTab('accepted', this)">Acceptées</button>
+          <button class="drawer-tab" onclick="switchDrawerTab('rejected', this)">Refusées</button>
+          <button class="drawer-tab" onclick="switchDrawerTab('trash', this)">🗑️ Corbeille</button>
+          <button class="drawer-tab btn-empty-trash" id="btn-empty-trash" onclick="emptyTrashWithEffect()">🔥 Vider la corbeille</button>
+        </div>
+      </div>
+
+      <div id="ideas-list">
+        <!-- Les idées s'afficheront ici -->
+      </div>
+
+      <button class="drawer-close" style="width: 100%; margin-top: auto;" onclick="closeSecretDrawer()">Refermer le tiroir</button>
+    </div>
+  </div>
+
   <script>
     let canvas, ctx;
     let gameInterval;
     let bird, pipes, score, isGameOver, isGameStarted;
+    let currentDrawerTab = 'pending';
+
+    function playDrawerSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const bufferSize = audioCtx.sampleRate * 0.4;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.4);
+        filter.Q.value = 3;
+
+        const gainNode = audioCtx.createGain();
+        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+
+        noise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        noise.start();
+      } catch (e) {}
+    }
+
+    // Son de brûlage / explosion rapide pour la corbeille
+    function playBurnSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.5);
+
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch (e) {}
+    }
 
     function startFlappyBoing() {
       document.getElementById('flappy-overlay').style.display = 'flex';
@@ -172,14 +556,7 @@
     }
 
     function resetGame() {
-      bird = {
-        x: 80,
-        y: 250,
-        radius: 15,
-        gravity: 0.5,
-        lift: -8,
-        velocity: 0
-      };
+      bird = { x: 80, y: 250, radius: 15, gravity: 0.5, lift: -8, velocity: 0 };
       pipes = [];
       score = 0;
       isGameOver = false;
@@ -208,77 +585,46 @@
 
     function updateGame() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Dessiner le fond (style ring/trampoline)
       ctx.fillStyle = '#111';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (isGameStarted && !isGameOver) {
-        // Gravité
         bird.velocity += bird.gravity;
         bird.y += bird.velocity;
 
-        // Gestion des tuyaux (poteaux de ring)
         if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 200) {
-          let minHeight = 50;
-          let maxHeight = canvas.height - 200;
+          let minHeight = 50, maxHeight = canvas.height - 200;
           let height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
           let gap = 130;
-          
-          pipes.push({
-            x: canvas.width,
-            top: height,
-            bottom: canvas.height - height - gap,
-            passed: false
-          });
+          pipes.push({ x: canvas.width, top: height, bottom: canvas.height - height - gap, passed: false });
         }
 
         for (let i = pipes.length - 1; i >= 0; i--) {
           pipes[i].x -= 3;
-
-          // Collision
-          if (
-            bird.x + bird.radius > pipes[i].x && 
-            bird.x - bird.radius < pipes[i].x + 60 &&
-            (bird.y - bird.radius < pipes[i].top || bird.y + bird.radius > canvas.height - pipes[i].bottom)
-          ) {
+          if (bird.x + bird.radius > pipes[i].x && bird.x - bird.radius < pipes[i].x + 60 &&
+            (bird.y - bird.radius < pipes[i].top || bird.y + bird.radius > canvas.height - pipes[i].bottom)) {
             isGameOver = true;
           }
-
-          // Score
           if (!pipes[i].passed && pipes[i].x + 60 < bird.x) {
             score++;
             pipes[i].passed = true;
           }
-
-          // Supprimer les tuyaux sortants
-          if (pipes[i].x < -60) {
-            pipes.splice(i, 1);
-          }
+          if (pipes[i].x < -60) pipes.splice(i, 1);
         }
 
-        // Limites sol/plafond
-        if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
-          isGameOver = true;
-        }
+        if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) isGameOver = true;
       }
 
-      // Dessiner les poteaux (Obstacles)
       for (let i = 0; i < pipes.length; i++) {
         ctx.fillStyle = '#ff0000';
-        // Haut
         ctx.fillRect(pipes[i].x, 0, 60, pipes[i].top);
-        // Bas
         ctx.fillRect(pipes[i].x, canvas.height - pipes[i].bottom, 60, pipes[i].bottom);
-        
-        // Bordure des poteaux
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
         ctx.strokeRect(pipes[i].x, 0, 60, pipes[i].top);
         ctx.strokeRect(pipes[i].x, canvas.height - pipes[i].bottom, 60, pipes[i].bottom);
       }
 
-      // Dessiner le "Wrestler" (le joueur)
       ctx.fillStyle = '#fff';
       ctx.beginPath();
       ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
@@ -287,13 +633,11 @@
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Affichage du score
       ctx.fillStyle = '#fff';
       ctx.font = '24px "Oswald", Arial';
       ctx.textAlign = 'left';
       ctx.fillText('Score: ' + score, 20, 35);
 
-      // Écran d'accueil / Game Over
       if (!isGameStarted) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -312,6 +656,225 @@
         ctx.font = '20px Arial';
         ctx.fillText('Clique pour recommencer', canvas.width / 2, canvas.height / 2 + 20);
       }
+    }
+
+    function openIdeaBox() {
+      document.getElementById('idea-overlay').style.display = 'flex';
+      document.getElementById('success-msg').style.display = 'none';
+    }
+
+    function closeIdeaBox() {
+      document.getElementById('idea-overlay').style.display = 'none';
+    }
+
+    function submitIdea() {
+      const pseudo = document.getElementById('pseudo').value.trim();
+      const discord = document.getElementById('discord').value.trim();
+      const text = document.getElementById('idea-text').value.trim();
+
+      if (!pseudo || !text) {
+        alert("Remplis ton pseudo et ton idée bg.");
+        return;
+      }
+
+      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+      const uniqueId = Date.now() + Math.random();
+      ideas.push({
+        id: uniqueId,
+        pseudo,
+        discord: discord || 'Aucun',
+        text,
+        status: 'pending',
+        date: new Date().toLocaleDateString()
+      });
+      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+
+      document.getElementById('success-msg').style.display = 'block';
+      document.getElementById('pseudo').value = '';
+      document.getElementById('discord').value = '';
+      document.getElementById('idea-text').value = '';
+      setTimeout(() => {
+        closeIdeaBox();
+      }, 1500);
+    }
+
+    // Code secret 1710666
+    let typedCode = "";
+    window.addEventListener('keydown', function(e) {
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+      
+      if (e.key >= '0' && e.key <= '9') {
+        typedCode += e.key;
+        if (typedCode.length > 7) {
+          typedCode = typedCode.slice(-7);
+        }
+        if (typedCode === "1710666") {
+          openSecretDrawer();
+          typedCode = "";
+        }
+      }
+    });
+
+    // Gestion du cooldown de 666 minutes pour la corbeille
+    function checkTrashExpiration(ideas) {
+      const now = Date.now();
+      const trashTimeoutMs = 666 * 60 * 1000; // 666 minutes en millisecondes
+      return ideas.map(item => {
+        if (item.status === 'trash' && item.trashTime) {
+          if (now - item.trashTime > trashTimeoutMs) {
+            return null; // Expiré après 666 minutes
+          }
+        }
+        return item;
+      }).filter(Boolean);
+    }
+
+    function openSecretDrawer() {
+      const overlay = document.getElementById('secret-drawer-overlay');
+      overlay.style.display = 'flex';
+      playDrawerSound();
+      
+      setTimeout(() => {
+        overlay.classList.add('active');
+      }, 10);
+
+      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+      ideas = checkTrashExpiration(ideas);
+      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+
+      renderIdeas();
+    }
+
+    function closeSecretDrawer() {
+      const overlay = document.getElementById('secret-drawer-overlay');
+      playDrawerSound();
+      overlay.classList.remove('active');
+      
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 300);
+    }
+
+    function switchDrawerTab(tab, btnElement) {
+      currentDrawerTab = tab;
+      document.querySelectorAll('.drawer-tab').forEach(b => {
+        if(b.id !== 'btn-empty-trash') b.classList.remove('active');
+      });
+      btnElement.classList.add('active');
+
+      // Afficher ou masquer le bouton vider la corbeille en haut selon l'onglet
+      const emptyTrashBtn = document.getElementById('btn-empty-trash');
+      if (currentDrawerTab === 'trash') {
+        emptyTrashBtn.style.display = 'block';
+      } else {
+        emptyTrashBtn.style.display = 'none';
+      }
+
+      renderIdeas();
+    }
+
+    function updateIdeaStatus(id, newStatus) {
+      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+      ideas = ideas.map(item => {
+        if (Number(item.id) === Number(id)) {
+          item.status = newStatus;
+          if (newStatus === 'trash') {
+            item.trashTime = Date.now(); // Déclenche le cooldown de 666 minutes
+          }
+        }
+        return item;
+      });
+      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+      renderIdeas();
+    }
+
+    // Animation de brûlage individuel avec son
+    function burnIdeaWithAnimation(id) {
+      const card = document.getElementById(`card-${id}`);
+      if (card) {
+        playBurnSound();
+        card.classList.add('burning');
+        setTimeout(() => {
+          deleteIdeaForever(id);
+        }, 300); // Durée de l'animation CSS
+      } else {
+        deleteIdeaForever(id);
+      }
+    }
+
+    function deleteIdeaForever(id) {
+      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+      ideas = ideas.filter(item => Number(item.id) !== Number(id));
+      localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+      renderIdeas();
+    }
+
+    // Animation et son pour vider toute la corbeille d'un coup
+    function emptyTrashWithEffect() {
+      const cards = document.querySelectorAll('.idea-card');
+      if (cards.length === 0) return;
+
+      playBurnSound();
+      cards.forEach(card => card.classList.add('burning'));
+
+      setTimeout(() => {
+        let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+        ideas = ideas.filter(item => item.status !== 'trash');
+        localStorage.setItem('atw_secret_ideas', JSON.stringify(ideas));
+        renderIdeas();
+      }, 300);
+    }
+
+    // Calcul du temps restant avant destruction définitive (666 min)
+    function getRemainingTrashTime(trashTime) {
+      if (!trashTime) return "666 min restantes";
+      const elapsedMs = Date.now() - trashTime;
+      const totalMs = 666 * 60 * 1000;
+      const remainingMs = totalMs - elapsedMs;
+      const remainingMin = Math.ceil(remainingMs / (60 * 1000));
+      if (remainingMin <= 0) return "Expiant...";
+      return `${remainingMin} min restantes`;
+    }
+
+    function renderIdeas() {
+      const listContainer = document.getElementById('ideas-list');
+      let ideas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
+
+      const filteredIdeas = ideas.filter(item => {
+        if (!item.status) item.status = 'pending';
+        return item.status === currentDrawerTab;
+      });
+
+      if (filteredIdeas.length === 0) {
+        listContainer.innerHTML = `<p style="color: #555; text-align: center; padding: 60px 0; font-family: Arial, sans-serif;">Aucune idée dans cette section...</p>`;
+        return;
+      }
+
+      listContainer.innerHTML = filteredIdeas.map(item => `
+        <div class="idea-card" id="card-${item.id}">
+          <div class="idea-card-main">
+            <div class="idea-card-header">
+              <span class="idea-author">${item.pseudo}</span>
+              <span class="idea-discord">Discord: ${item.discord}</span>
+              <span class="idea-date">${item.date || ''}</span>
+              ${currentDrawerTab === 'trash' ? `<span class="trash-timer">⏳ ${getRemainingTrashTime(item.trashTime)}</span>` : ''}
+            </div>
+            <p class="idea-text">${item.text}</p>
+          </div>
+          <div class="idea-card-actions">
+            ${currentDrawerTab !== 'accepted' ? `<button class="action-btn btn-accept" onclick="updateIdeaStatus(${item.id}, 'accepted')">✔ Accepter</button>` : ''}
+            ${currentDrawerTab !== 'rejected' ? `<button class="action-btn btn-reject" onclick="updateIdeaStatus(${item.id}, 'rejected')">✖ Refuser</button>` : ''}
+            ${currentDrawerTab !== 'pending' && currentDrawerTab !== 'trash' ? `<button class="action-btn btn-pending" onclick="updateIdeaStatus(${item.id}, 'pending')">↺ En attente</button>` : ''}
+            
+            ${currentDrawerTab === 'trash' ? `
+              <button class="action-btn btn-restore" onclick="updateIdeaStatus(${item.id}, 'pending')">♻ Restaurer</button>
+              <button class="action-btn btn-burn" onclick="burnIdeaWithAnimation(${item.id})">🔥 Brûler</button>
+            ` : `
+              <button class="action-btn btn-trash" onclick="updateIdeaStatus(${item.id}, 'trash')">🗑️ Jeter</button>
+            `}
+          </div>
+        </div>
+      `).join('');
     }
   </script>
 
