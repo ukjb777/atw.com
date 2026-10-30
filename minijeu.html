@@ -476,9 +476,8 @@
   </div>
 
   <script>
-    // URL publique partagée (JSONBin.io gratuit et anonyme pour stocker les idées et le record mondial)
-    const BIN_ID = "6741b18ead19ca34f8d227f2"; // Bin partagé pour la démo/test en ligne
-    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    // URL publique partagée dédiée à vos tests en ligne
+    const CLOUD_BIN_URL = "https://json.extendsclass.com/bin/63e147f7d142d54e601c23cb";
 
     let canvas, ctx;
     let gameInterval;
@@ -530,26 +529,17 @@
       } catch (e) {}
     }
 
-    // --- CHARGEMENT ET SAUVEGARDE EN LIGNE ---
-    async function fetchOnlineData() {
-      try {
-        const response = await fetch(API_URL + "/latest", {
-          headers: { "X-Master-Key": "$2a$10$7... (clé publique)" } // Lecture seule ouverte
-        });
-        // Utilisation d'un stockage de secours local si pas de clé JSONBin configurée, 
-        // mais pour du 100% en ligne gratuit sans clé, on utilise une API de test publique :
-      } catch (e) {}
-    }
-
-    // Version simplifiée et ultra robuste avec l'API publique MyJSON / JSONBin alternative sans clé
     async function loadIdeasFromCloud() {
       try {
-        let res = await fetch("https://json.extendsclass.com/bin/63e147f7d142d54e601c23cb");
+        let res = await fetch(CLOUD_BIN_URL, { cache: "no-store" });
         let data = await res.json();
-        if (data && data.ideas) onlineIdeas = data.ideas;
-        if (data && typeof data.worldRecord !== 'undefined') worldRecord = data.worldRecord;
+        if (data && Array.isArray(data.ideas)) {
+          onlineIdeas = data.ideas;
+        }
+        if (data && typeof data.worldRecord !== 'undefined') {
+          worldRecord = Number(data.worldRecord);
+        }
       } catch (e) {
-        // Fallback local si hors ligne
         onlineIdeas = JSON.parse(localStorage.getItem('atw_secret_ideas') || '[]');
         worldRecord = Number(localStorage.getItem('atw_world_record') || 0);
       }
@@ -559,7 +549,7 @@
       localStorage.setItem('atw_secret_ideas', JSON.stringify(onlineIdeas));
       localStorage.setItem('atw_world_record', worldRecord);
       try {
-        await fetch("https://json.extendsclass.com/bin/63e147f7d142d54e601c23cb", {
+        await fetch(CLOUD_BIN_URL, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ideas: onlineIdeas, worldRecord: worldRecord })
@@ -644,7 +634,6 @@
           if (!pipes[i].passed && pipes[i].x + 60 < bird.x) {
             score++;
             pipes[i].passed = true;
-            // Mettre à jour le record mondial en direct
             if (score > worldRecord) {
               worldRecord = score;
               saveIdeasToCloud();
@@ -674,7 +663,6 @@
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Affichage Score, Record Perso et Record Mondial
       ctx.fillStyle = '#fff';
       ctx.font = '20px "Oswald", Arial';
       ctx.textAlign = 'left';
@@ -750,7 +738,6 @@
       }, 1500);
     }
 
-    // Code secret 1710666
     let typedCode = "";
     window.addEventListener('keydown', function(e) {
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
@@ -767,6 +754,19 @@
       }
     });
 
+    function checkTrashExpiration(ideas) {
+      const now = Date.now();
+      const trashTimeoutMs = 666 * 60 * 1000;
+      return ideas.map(item => {
+        if (item.status === 'trash' && item.trashTime) {
+          if (now - item.trashTime > trashTimeoutMs) {
+            return null;
+          }
+        }
+        return item;
+      }).filter(Boolean);
+    }
+
     async function openSecretDrawer() {
       const overlay = document.getElementById('secret-drawer-overlay');
       overlay.style.display = 'flex';
@@ -777,6 +777,9 @@
       }, 10);
 
       await loadIdeasFromCloud();
+      onlineIdeas = checkTrashExpiration(onlineIdeas);
+      await saveIdeasToCloud();
+
       renderIdeas();
     }
 
@@ -895,7 +898,7 @@
               <button class="action-btn btn-restore" onclick="updateIdeaStatus(${item.id}, 'pending')">♻ Restaurer</button>
               <button class="action-btn btn-burn" onclick="burnIdeaWithAnimation(${item.id})">🔥 Brûler</button>
             ` : `
-              <button class="action-btn btn-trash" onclick="updateIdeaStatus(${item.id}, 'trash')">🗑️ Jeter</button>
+              <button class="action-btn btn-trash" onclick="updateIdeaStatus(${item.id}, 'trash')"">🗑️ Jeter</button>
             `}
           </div>
         </div>
